@@ -1,4 +1,4 @@
-name: CI ReUse MAIN
+name: CI ReUse Main
 on:
   workflow_call:
 jobs:
