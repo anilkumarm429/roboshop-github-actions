@@ -17,35 +17,35 @@ jobs:
     runs-on: self-hosted
     steps:
       - run: echo OK
-  Test:
-    runs-on: self-hosted
-    needs: Build
-    steps:
-      - run: echo OK
-  Dev_deploy:
-    environment: DEV
-    runs-on: self-hosted
-    needs: Test
-    steps:
-      - run: echo OK
-  Qa_Deploy:
-    environment: QA
-    runs-on: self-hosted
-    needs: Dev_deploy
-    steps:
-      - run: echo OK
-  Uat_Deploy:
-    environment: UAT
-    runs-on: self-hosted
-    needs: Qa_deploy
-    steps:
-      - run: echo OK
-  Prod_Deploy:
-    environment: PROD
-    runs-on: self-hosted
-    needs: Uat_Deploy
-    steps:
-      - run: echo OK
+#  Test:
+#    runs-on: self-hosted
+#    needs: Build
+#    steps:
+#      - run: echo OK
+#  Dev_deploy:
+#    environment: DEV
+#    runs-on: self-hosted
+#    needs: Test
+#    steps:
+#      - run: echo OK
+#  Qa_Deploy:
+#    environment: QA
+#    runs-on: self-hosted
+#    needs: Dev_deploy
+#    steps:
+#      - run: echo OK
+#  Uat_Deploy:
+#    environment: UAT
+#    runs-on: self-hosted
+#    needs: Qa_deploy
+#    steps:
+#      - run: echo OK
+#  Prod_Deploy:
+#    environment: PROD
+#    runs-on: self-hosted
+#    needs: Uat_Deploy
+#    steps:
+#      - run: echo OK
 
 
 
