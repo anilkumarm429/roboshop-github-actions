@@ -6,7 +6,10 @@ on:
         required: true
         type: string
 jobs:
-  Build:
-    uses: anilkumarm429/roboshop-github-actions/.github/workflows/build.yml@main
-    with:
-      appType: '${{ inputs.appType }}'
+  Nodejs_Build:
+    if: input.appType == 'nodejs'
+    runs-on: self-hosted
+    steps:
+      - run: echo OK
+
+
