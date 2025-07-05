@@ -12,4 +12,8 @@ jobs:
     steps:
       - run: echo OK
 
-
+  Maven_Build:
+    if: inputs.appType == 'maven'
+    runs-on: self-hosted
+    steps:
+      - run: echo OK

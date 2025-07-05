@@ -1,8 +1,19 @@
 name: CI ReUse Main
 on:
   workflow_call:
+    inputs:
+      appType:
+        required: true
+        type: string
 jobs:
-  Build:
+  Nodejs_Build:
+    if: inputs.appType == 'nodejs'
+    runs-on: self-hosted
+    steps:
+      - run: echo OK
+
+  Maven_Build:
+    if: inputs.appType == 'maven'
     runs-on: self-hosted
     steps:
       - run: echo OK
