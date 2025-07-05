@@ -1,0 +1,8 @@
+name: CI ReUse DEV
+on:
+  workflow_call:
+jobs:
+  Build:
+    runs-on: self-hosted
+    steps:
+      - run: echo OK
