@@ -18,4 +18,5 @@ jobs:
     if: inputs.appType == 'maven'
     runs-on: self-hosted
     steps:
-      - run: echo OK
+      - uses: actions/checkout@v4
+      - run: mvn package
