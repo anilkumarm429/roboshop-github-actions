@@ -11,10 +11,10 @@ jobs:
     with:
       appType: '${{ inputs.appType }}'
   Test:
-    runs-on: self-hosted
     needs: Build
-    steps:
-      - run: echo OK
+    uses: anilkumarm429/roboshop-github-actions/.github/workflows/test.yml@main
+    with:
+      appType: '${{ inputs.appType }}'
   Dev_deploy:
     environment: DEV
     runs-on: self-hosted

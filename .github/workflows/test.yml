@@ -1,4 +1,4 @@
-name: CI ReUse Dev
+name: Test Cases
 on:
   workflow_call:
     inputs:
@@ -6,16 +6,17 @@ on:
         required: true
         type: string
 jobs:
-  Nodejs_Build:
+  NodeJS_Test:
     if: inputs.appType == 'nodejs'
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
-      - run: npm install
+      - run: |
+          echo npm install
+          echo npm test
         name: Download Dependencies
-
-  Maven_Build:
+  Maven_Test:
     if: inputs.appType == 'maven'
     runs-on: self-hosted
     steps:
-      - run: echo OK
+      - run: echo mvn test
