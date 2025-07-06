@@ -5,15 +5,20 @@ on:
       appType:
         required: true
         type: string
+      docker_build:
+        required: true
+        type: string
 jobs:
-  Nodejs_Build:
+  NodeJS_Build:
     if: inputs.appType == 'nodejs'
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
       - run: npm install
         name: Download Dependencies
-
+      - name: Docker Build
+        if: inputs.docker_build == 'true'
+        run: docker build .
   Maven_Build:
     if: inputs.appType == 'maven'
     runs-on: self-hosted
@@ -25,3 +30,5 @@ jobs:
     runs-on: self-hosted
     steps:
       - run: echo ng build
+
+
