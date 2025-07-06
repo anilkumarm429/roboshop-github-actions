@@ -18,7 +18,7 @@ jobs:
       appType: '${{ inputs.appType }}'
   DockerBuild:
     needs: Test
-    uses: raghudevopsb84/roboshop-github-actions/.github/workflows/build.yml@main
+    uses: anilkumarm429/roboshop-github-actions/.github/workflows/build.yml@main
     with:
       appType: '${{ inputs.appType }}'
       docker_build: "true"
