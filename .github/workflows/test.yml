@@ -20,3 +20,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - run: echo mvn test
+  Python_Test:
+    if: inputs.appType == 'python'
+    runs-on: self-hosted
+    steps:
+      - run: echo python -m unittest
