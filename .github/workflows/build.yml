@@ -5,6 +5,9 @@ on:
       appType:
         required: true
         type: string
+      appName:
+        required: true
+        type: string
       docker_build:
         required: true
         type: string
@@ -12,13 +15,29 @@ jobs:
   NodeJS_Build:
     if: inputs.appType == 'nodejs'
     runs-on: self-hosted
+    env:
+      vault_token: ${{ secrets.vault_token }}
     steps:
       - uses: actions/checkout@v4
       - run: npm install
         name: Download Dependencies
+      - name: Import Secrets
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: http://vault-int.apps11.shop:8200/
+          token: ${{ secrets.vault_token }}
+          secrets: |
+            roboshop-infra/data/azure-sp ARM_CLIENT_ID | ARM_CLIENT_ID ;
+            roboshop-infra/data/azure-sp ARM_CLIENT_SECRET | ARM_CLIENT_SECRET ;
+            roboshop-infra/data/azure-sp ARM_TENANT_ID | ARM_TENANT_ID ;
+            roboshop-infra/data/azure-sp ARM_SUBSCRIPTION_ID | ARM_SUBSCRIPTION_ID ;
       - name: Docker Build
         if: inputs.docker_build == 'true'
-        run: docker build .
+        run: |
+          az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
+          az acr login --name roboshop84
+          docker build -t roboshop84.azurecr.io/roboshop-${{ inputs.appName }}:${{ github.sha }} .
   Maven_Build:
     if: inputs.appType == 'maven'
     runs-on: self-hosted

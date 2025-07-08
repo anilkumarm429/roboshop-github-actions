@@ -5,11 +5,15 @@ on:
       appType:
         required: true
         type: string
+      appName:
+        required: true
+        type: string
 jobs:
   Build:
     uses: anilkumarm429/roboshop-github-actions/.github/workflows/build.yml@main
     with:
       appType: '${{ inputs.appType }}'
+      appName: '${{ inputs.appName }}'
       docker_build: "false"
   Test:
     needs: Build
@@ -21,6 +25,7 @@ jobs:
     uses: anilkumarm429/roboshop-github-actions/.github/workflows/build.yml@main
     with:
       appType: '${{ inputs.appType }}'
+      appName: '${{ inputs.appName }}'
       docker_build: "true"
   Dev_deploy:
     environment: DEV
