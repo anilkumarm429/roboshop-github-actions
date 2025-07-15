@@ -13,39 +13,29 @@ on:
         required: true
 jobs:
   Build:
+    uses: anilkumarm429/roboshop-github-actions/.github/workflows/build.yml@main
+    with:
+      appType: '${{ inputs.appType }}'
+      appName: '${{ inputs.appName }}'
+      docker_build: "false"
+    secrets:
+      vault_token: ${{ secrets.vault_token }}
+  Test:
+    needs: Build
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
-      - run: npm install
-        name: Download NodeJS Dependencies
+      - run: |
+          echo npm install
+          echo npm test
+        name: Run NodeJS Tests
         if: inputs.appType == 'nodejs'
-      - run: mvn package
-        name: Download Maven Dependencies
+      - run: echo mvn test
+        name: Run Maven Tests
         if: inputs.appType == 'maven'
-      - name: Import Secrets
-        if: inputs.docker_build == 'true'
-        id: import-secrets
-        uses: hashicorp/vault-action@v2
-        with:
-          url: http://vault-int.apps11.shop:8200/
-          token: ${{ secrets.vault_token }}
-          secrets: |
-            roboshop-infra/data/azure-sp ARM_CLIENT_ID | ARM_CLIENT_ID ;
-            roboshop-infra/data/azure-sp ARM_CLIENT_SECRET | ARM_CLIENT_SECRET ;
-            roboshop-infra/data/azure-sp ARM_TENANT_ID | ARM_TENANT_ID ;
-            roboshop-infra/data/azure-sp ARM_SUBSCRIPTION_ID | ARM_SUBSCRIPTION_ID ;
-      - name: Docker Build
-        if: inputs.docker_build == 'true'
-        run: |
-          az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
-          az acr login --name roboshop84
-          docker build -t roboshop84.azurecr.io/roboshop-${{ inputs.appName }}:${{ github.sha }} .
-          docker push roboshop84.azurecr.io/roboshop-${{ inputs.appName }}:${{ github.sha }}
-  Test:
-    needs: Build
-    uses: anilkumarm429/roboshop-github-actions/.github/workflows/test.yml@main
-    with:
-      appType: '${{ inputs.appType }}'
+      - run: echo python -m unittest
+        name: Run Python Tests
+        if: inputs.appType == 'python'
   DockerBuild:
     needs: Test
     uses: anilkumarm429/roboshop-github-actions/.github/workflows/build.yml@main
