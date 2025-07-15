@@ -41,7 +41,7 @@ jobs:
         if: inputs.docker_build == 'true'
         run: |
           az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
-          az acr login --name roboshopb84
+          az acr login --name roboshop84
           docker build -t roboshop84.azurecr.io/roboshop-${{ inputs.appName }}:${{ github.sha }} .
           docker push roboshop84.azurecr.io/roboshop-${{ inputs.appName }}:${{ github.sha }}
 
