@@ -15,14 +15,18 @@ on:
       vault_token:
         required: true
 jobs:
-  NodeJS_Build:
-    if: inputs.appType == 'nodejs'
+  Build:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
       - run: npm install
-        name: Download Dependencies
+        name: Download NodeJS Dependencies
+        if: inputs.appType == 'nodejs'
+      - run: mvn package
+        name: Download Maven Dependencies
+        if: inputs.appType == 'maven'
       - name: Import Secrets
+        if: inputs.docker_build == 'true'
         id: import-secrets
         uses: hashicorp/vault-action@v2
         with:
@@ -40,16 +44,4 @@ jobs:
           az acr login --name roboshop84
           docker build -t roboshop84.azurecr.io/roboshop-${{ inputs.appName }}:${{ github.sha }} .
           docker push roboshop84.azurecr.io/roboshop-${{ inputs.appName }}:${{ github.sha }}
-  Maven_Build:
-    if: inputs.appType == 'maven'
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v4
-      - run: mvn package
-  Angular_Build:
-    if: inputs.appType == 'angular'
-    runs-on: self-hosted
-    steps:
-      - run: echo ng build
-
 
