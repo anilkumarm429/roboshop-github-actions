@@ -1,0 +1,35 @@
+name: AKS Deploy
+on:
+  workflow_call:
+    inputs:
+      appEnv:
+        required: true
+        type: string
+      resourceGroup:
+        required: true
+        type: string
+    secrets:
+      vault_token:
+        required: true
+jobs:
+  Build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import Secrets
+        if: inputs.docker_build == 'true'
+        id: import-secrets
+        uses: hashicorp/vault-action@v2
+        with:
+          url: http://vault-int.apps11.shop:8200/
+          token: ${{ secrets.vault_token }}
+          secrets: |
+            roboshop-infra/data/azure-sp ARM_CLIENT_ID | ARM_CLIENT_ID ;
+            roboshop-infra/data/azure-sp ARM_CLIENT_SECRET | ARM_CLIENT_SECRET ;
+            roboshop-infra/data/azure-sp ARM_TENANT_ID | ARM_TENANT_ID ;
+            roboshop-infra/data/azure-sp ARM_SUBSCRIPTION_ID | ARM_SUBSCRIPTION_ID ;
+      - name: Deploy
+        run: |
+          az login --service-principal --username "${ARM_CLIENT_ID}" --password "${ARM_CLIENT_SECRET}" --tenant "${ARM_TENANT_ID}"
+          az aks get-credentials --name main-${{ inputs.appEnv }} --resource-group ukwest-${{ inputs.resourceGroup }} --overwrite-existing
+
