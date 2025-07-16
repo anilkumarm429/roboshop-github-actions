@@ -47,7 +47,7 @@ jobs:
       vault_token: ${{ secrets.vault_token }}
   Dev_deploy:
     needs: DockerBuild
-    environment: DEV
+#    environment: DEV
     uses: anilkumarm429/roboshop-github-actions/.github/workflows/aks-deploy.yml@main
     with:
       appEnv: 'dev'
