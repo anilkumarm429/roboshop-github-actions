@@ -37,6 +37,20 @@ jobs:
             roboshop-infra/data/azure-sp ARM_CLIENT_SECRET | ARM_CLIENT_SECRET ;
             roboshop-infra/data/azure-sp ARM_TENANT_ID | ARM_TENANT_ID ;
             roboshop-infra/data/azure-sp ARM_SUBSCRIPTION_ID | ARM_SUBSCRIPTION_ID ;
+            roboshop-infra/data/sonarqube token | SONAR_TOKEN ;
+
+      - name: SonarQube Scan - Java
+        if: inputs.docker_build == 'true' && inputs.appType == 'maven'
+        run: |
+          /home/github/sonar-scanner-7.1.0.4889-linux-x64/bin/sonar-scanner -Dsonar.host.url=http://sonarqube.apps11.shop:9000 -Dsonar.token=${SONAR_TOKEN} -Dsonar.projectKey=roboshop-${{ inputs.appName }} -Dsonar.java.binaries=./target/
+          ### -Dsonar.qualitygate.wait=true
+          ### Above option to fail the pipeline, As of now we are not doing it.
+
+      - name: SonarQube Scan - NonJava
+        if: inputs.docker_build == 'true' && inputs.appType != 'maven'
+        run: |
+          /home/github/sonar-scanner-7.1.0.4889-linux-x64/bin/sonar-scanner -Dsonar.host.url=http://sonarqube.apps11.shop:9000 -Dsonar.token=${SONAR_TOKEN} -Dsonar.projectKey=roboshop-${{ inputs.appName }}
+
       - name: Docker Build
         if: inputs.docker_build == 'true'
         run: |
